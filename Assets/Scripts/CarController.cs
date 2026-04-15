@@ -1,74 +1,152 @@
 using UnityEngine;
 
+// Makes sure this GameObject always has a Rigidbody attached
 [RequireComponent(typeof(Rigidbody))]
 public class CarController : MonoBehaviour
 {
     [Header("Movement Settings")]
-    public float acceleration = 1500f;   // How strongly the car accelerates
-    public float maxSpeed = 50f;         // Maximum allowed speed
-    public float steering = 120f;         // Steering force
-    public float drag = 0.1f;            // Custom drag (since velocity is now linearVelocity in Unity 6)
+    public float acceleration = 35f;          // Forward acceleration strength
+    public float reverseAcceleration = 18f;   // Reverse acceleration strength
+    public float maxSpeed = 30f;              // Maximum speed the car can reach
+    public float steering = 80f;              // Base steering sensitivity
 
-    private Rigidbody rb;                 // Reference to the car's Rigidbody
-    private float inputVertical;          // W/S input (forward/backward)
-    private float inputHorizontal;        // A/D input (left/right)
+    [Header("Grip / Handling")]
+    public float forwardDrag = 0.995f;        // Small slowdown when coasting forward
+    public float lateralGrip = 0.85f;         // Controls how much sideways sliding is removed
+    public float angularGrip = 0.92f;         // Reduces spinning/sliding during turns
+    public float downforce = 25f;             // Pushes the car down at higher speed for stability
+
+    [Header("Braking")]
+    public float brakeStrength = 0.9f;        // Stronger slowdown when braking against movement
+
+    private Rigidbody rb;                     // Reference to the car's Rigidbody
+    private float inputVertical;              // W/S or Up/Down input
+    private float inputHorizontal;            // A/D or Left/Right input
 
     void Awake()
     {
-        // Get Rigidbody component
+        // Get the Rigidbody component attached to this car
         rb = GetComponent<Rigidbody>();
 
-        // Lower center of mass = more stable car
-        rb.centerOfMass = new Vector3(0, -0.5f, 0);
+        // Lower the center of mass so the car feels more stable and less likely to tip/slide
+        rb.centerOfMass = new Vector3(0f, -0.6f, 0f);
+
+        // Smooths physics-based movement visually
+        rb.interpolation = RigidbodyInterpolation.Interpolate;
+
+        // Helps with collision accuracy at higher speeds
+        rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
+
+        // Keep Unity's built-in damping low because we are controlling movement manually
+        rb.linearDamping = 0f;
+        rb.angularDamping = 0.5f;
     }
 
     void Update()
     {
-        // Read player input every frame
-        // W/S or Up/Down = Vertical axis
+        // Read player movement input every frame
         inputVertical = Input.GetAxis("Vertical");
-
-        // A/D or Left/Right = Horizontal axis
         inputHorizontal = Input.GetAxis("Horizontal");
     }
 
     void FixedUpdate()
     {
-        // Current speed using Unity 6 physics
+        // Get current speed from the Rigidbody
         float speed = rb.linearVelocity.magnitude;
 
-        // ------------------------------
-        // 1. ACCELERATION
-        // ------------------------------
-        if (speed < maxSpeed)
-        {
-            // Create a forward force based on input
-            Vector3 force = transform.forward * inputVertical * acceleration;
+        // Handle forward/reverse movement
+        ApplyAcceleration(speed);
 
-            // Apply acceleration force
-            rb.AddForce(force * Time.fixedDeltaTime, ForceMode.Acceleration);
+        // Handle turning
+        ApplySteering(speed);
+
+        // Reduce sliding and spinning
+        ApplyGrip();
+
+        // Push the car down more as it goes faster
+        ApplyDownforce(speed);
+    }
+
+    void ApplyAcceleration(float speed)
+    {
+        // If player is pressing forward and we are below max speed, accelerate forward
+        if (inputVertical > 0f && speed < maxSpeed)
+        {
+            rb.AddForce(transform.forward * inputVertical * acceleration, ForceMode.Acceleration);
+        }
+        // If player is pressing backward, apply reverse force
+        else if (inputVertical < 0f)
+        {
+            rb.AddForce(transform.forward * inputVertical * reverseAcceleration, ForceMode.Acceleration);
+        }
+        else
+        {
+            // If no throttle is being pressed, apply a little rolling resistance
+            // Convert world velocity into local car space
+            Vector3 localVel = transform.InverseTransformDirection(rb.linearVelocity);
+
+            // Slightly reduce forward/backward speed
+            localVel.z *= forwardDrag;
+
+            // Convert it back to world space and apply it
+            rb.linearVelocity = transform.TransformDirection(localVel);
         }
 
-        // ------------------------------
-        // 2. STEERING
-        // ------------------------------
-        // At high speeds, reduce steering to avoid instant 180° turns
-        float speedFactor = Mathf.Clamp01(speed / maxSpeed);
+        // If player is pressing backward while still moving forward,
+        // apply extra braking to make stopping feel more natural
+        if (inputVertical < 0f && Vector3.Dot(rb.linearVelocity, transform.forward) > 0f)
+        {
+            rb.linearVelocity *= brakeStrength;
+        }
+    }
 
-        // How much we steer this frame
-        float steerAmount = inputHorizontal * steering * speedFactor;
+    void ApplySteering(float speed)
+    {
+        // Calculate speed percentage relative to max speed
+        float speedPercent = Mathf.Clamp01(speed / maxSpeed);
 
-        // Apply rotation smoothly
-        Quaternion turnOffset = Quaternion.Euler(0f, steerAmount * Time.fixedDeltaTime, 0f);
-        rb.MoveRotation(rb.rotation * turnOffset);
+        // Reduce steering at higher speeds to prevent oversteering/sliding
+        float steerStrength = Mathf.Lerp(1f, 0.35f, speedPercent);
 
-        // ------------------------------
-        // 3. CUSTOM DRAG (linearVelocity version)
-        // ------------------------------
-        // Unity 6 removed rb.velocity; now we must fully reassign rb.linearVelocity
-        Vector3 slowed = rb.linearVelocity * (1f - drag * Time.fixedDeltaTime);
+        // Only allow proper steering if the car is actually moving a little
+        if (speed > 0.5f)
+        {
+            // Calculate turn amount for this physics step
+            float turnAmount = inputHorizontal * steering * steerStrength * Time.fixedDeltaTime;
 
-        // Apply the slowed velocity
-        rb.linearVelocity = slowed;
+            // Create a small rotation around the Y axis
+            Quaternion turnOffset = Quaternion.Euler(0f, turnAmount, 0f);
+
+            // Apply the rotation smoothly using the Rigidbody
+            rb.MoveRotation(rb.rotation * turnOffset);
+        }
+    }
+
+    void ApplyGrip()
+    {
+        // Convert the car's velocity into local space
+        // localVel.x = sideways velocity
+        // localVel.z = forward velocity
+        Vector3 localVel = transform.InverseTransformDirection(rb.linearVelocity);
+
+        // Reduce sideways sliding to make the car feel more planted
+        localVel.x *= lateralGrip;
+
+        // Convert velocity back to world space and apply it
+        rb.linearVelocity = transform.TransformDirection(localVel);
+
+        // Reduce uncontrolled spinning around the Y axis
+        rb.angularVelocity = new Vector3(
+            rb.angularVelocity.x,
+            rb.angularVelocity.y * angularGrip,
+            rb.angularVelocity.z
+        );
+    }
+
+    void ApplyDownforce(float speed)
+    {
+        // Push the car downward based on current speed
+        // This helps the car stay grounded and feel more stable at higher speeds
+        rb.AddForce(-transform.up * downforce * speed, ForceMode.Acceleration);
     }
 }
