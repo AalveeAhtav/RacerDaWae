@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: BlinnPhongCar
+  m_Name: BlinnPhong
   m_Shader: {fileID: 4800000, guid: 7ec0fe8f7085a0d43b915f83a7e6d587, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
