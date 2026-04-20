@@ -1459,7 +1459,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 410087039}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
+  m_LocalRotation: {x: 0.2778159, y: 0.3649717, z: -0.115075134, w: 0.88111955}
   m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1991,6 +1991,69 @@ MonoBehaviour:
       m_Data: []
   m_Knots:
     m_KnotsLink: []
+--- !u!1 &612491656
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 612491658}
+  - component: {fileID: 612491657}
+  m_Layer: 0
+  m_Name: SkyBoxController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &612491657
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 612491656}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4904237432923e048a78907866dab683, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SkyboxController
+  lightingManager: {fileID: 723283071}
+  daySkyboxMat: {fileID: 2100000, guid: 2fdc1726342f4a749a190a0a8677a1a2, type: 2}
+  sunsetSkyboxMat: {fileID: 2100000, guid: 08eeec41338b9244da7ecf05e9d85544, type: 2}
+  nightSkyboxMat: {fileID: 2100000, guid: 102c3f2cfdcb3d64199f97f4f9aa3d46, type: 2}
+  startingTimeOfDay: 0
+  autoAnimate: 1
+  secondsPerPhase: 10
+  daySunColor: {r: 1, g: 0.95, b: 0.8, a: 1}
+  daySunIntensity: 1.2
+  daySunElevation: 50
+  dayFogColor: {r: 0.7, g: 0.75, b: 0.8, a: 1}
+  sunsetSunColor: {r: 1, g: 0.5, b: 0.15, a: 1}
+  sunsetSunIntensity: 0.8
+  sunsetSunElevation: 12
+  sunsetFogColor: {r: 0.8627451, g: 0.47058824, b: 0.3137255, a: 1}
+  nightSunColor: {r: 0.1, g: 0.15, b: 0.3, a: 1}
+  nightSunIntensity: 0.1
+  nightSunElevation: 8
+  nightFogColor: {r: 0.05, g: 0.05, b: 0.1, a: 1}
+--- !u!4 &612491658
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 612491656}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 31.34586, y: 18.66517, z: 21.98302}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &654302579
 GameObject:
   m_ObjectHideFlags: 0
@@ -2103,6 +2166,68 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 654302579}
   m_Mesh: {fileID: 2094884177256686679, guid: 6503076fc48824e4f87cd11e064396e7, type: 3}
+--- !u!1 &723283070
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 723283072}
+  - component: {fileID: 723283071}
+  m_Layer: 0
+  m_Name: LightingManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &723283071
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 723283070}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bdb2a030c2a562f4c826cd4003b84e8d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LightingManager
+  sunLight: {fileID: 410087040}
+  sunColor: {r: 1, g: 0.95, b: 0.8, a: 1}
+  sunIntensity: 1.2
+  sunAzimuth: 45
+  sunElevation: 35
+  ambientMode: 1
+  ambientSkyColor: {r: 0.5, g: 0.65, b: 0.85, a: 1}
+  ambientEquatorColor: {r: 0.4, g: 0.4, b: 0.4, a: 1}
+  ambientGroundColor: {r: 0.25, g: 0.2, b: 0.15, a: 1}
+  ambientIntensity: 1
+  shadowDistance: 150
+  shadowQuality: 2
+  shadowBias: 0.01
+  shadowNormalBias: 0.1
+  enableFog: 1
+  fogColor: {r: 0.7, g: 0.75, b: 0.8, a: 1}
+  fogStartDistance: 80
+  fogEndDistance: 800
+--- !u!4 &723283072
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 723283070}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.79833, y: 0, z: 0.79838}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &727129664
 GameObject:
   m_ObjectHideFlags: 0
@@ -3235,7 +3360,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 80dde190f343db548b9a738a8ad83da8, type: 2}
+  - {fileID: 2100000, guid: 5681998dd6b78f440a1c696e992bab9a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -7477,3 +7602,5 @@ SceneRoots:
   - {fileID: 119793931}
   - {fileID: 1035818768}
   - {fileID: 469024475}
+  - {fileID: 723283072}
+  - {fileID: 612491658}
