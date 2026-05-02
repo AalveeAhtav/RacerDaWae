@@ -3,23 +3,20 @@ using TMPro;
 
 /// <summary>
 /// LapTimer.cs - Juliette Kolto
-///
-/// Tracks lap times using distance detection instead of triggers.
-/// Attach this to any GameObject in the scene (e.g. a LapTimer empty object).
-/// Drag the car and the Arch into the Inspector fields.
+/// Tracks lap times using distance detection from car to finish line.
 /// </summary>
 public class LapTimer : MonoBehaviour
 {
     [Header("References")]
-    [Tooltip("Drag the car GameObject (Free Racing Car Red Variant) here")]
+    [Tooltip("Drag Free Racing Car Red Variant here")]
     public Transform car;
 
     [Tooltip("Drag the Arch GameObject here")]
     public Transform finishLine;
 
     [Header("Detection")]
-    [Tooltip("How close the car needs to be to the finish line to trigger a lap (in Unity units)")]
-    [Range(1f, 20f)]
+    [Tooltip("How close the car needs to be to trigger a lap crossing")]
+    [Range(1f, 30f)]
     public float detectionRadius = 8f;
 
     [Header("UI References")]
@@ -35,12 +32,10 @@ public class LapTimer : MonoBehaviour
     private float currentLapTime = 0f;
     private float bestLapTime = float.MaxValue;
     private bool timerRunning = false;
-    private bool carNearFinish = false; // true when car is in the zone
+    private bool carInZone = false;
     private bool firstCrossing = true;
     private float lapCompleteTimer = 0f;
     private bool showingLapComplete = false;
-
-    // -------------------------------------------------------------------------
 
     void Start()
     {
@@ -53,33 +48,27 @@ public class LapTimer : MonoBehaviour
     {
         if (car == null || finishLine == null) return;
 
-        // Check distance between car and finish line
         float distance = Vector3.Distance(car.position, finishLine.position);
-        Debug.Log($"[LapTimer] Distance to finish: {distance:F1}");
 
         bool isNear = distance < detectionRadius;
 
-        // Car just entered the finish zone
-        if (isNear && !carNearFinish)
+        if (isNear && !carInZone)
         {
-            carNearFinish = true;
+            carInZone = true;
             OnFinishLineCrossed();
         }
 
-        // Car left the finish zone
-        if (!isNear && carNearFinish)
+        if (!isNear && carInZone)
         {
-            carNearFinish = false;
+            carInZone = false;
         }
 
-        // Update timer
         if (timerRunning)
         {
             currentLapTime += Time.deltaTime;
             UpdateCurrentLapUI();
         }
 
-        // Hide lap complete message after a few seconds
         if (showingLapComplete)
         {
             lapCompleteTimer += Time.deltaTime;
@@ -108,8 +97,6 @@ public class LapTimer : MonoBehaviour
 
     void CompleteLap()
     {
-        timerRunning = false;
-
         if (currentLapTime < bestLapTime)
         {
             bestLapTime = currentLapTime;
@@ -130,12 +117,6 @@ public class LapTimer : MonoBehaviour
         lapCompleteText.text = $"LAP COMPLETE!\n{FormatTime(currentLapTime)}";
         showingLapComplete = true;
         lapCompleteTimer = 0f;
-    }
-
-    void UpdateUI()
-    {
-        UpdateCurrentLapUI();
-        UpdateBestLapUI();
     }
 
     void UpdateCurrentLapUI()
@@ -160,4 +141,9 @@ public class LapTimer : MonoBehaviour
         int milliseconds = (int)((time * 100f) % 100f);
         return $"{minutes:00}:{seconds:00}.{milliseconds:00}";
     }
+    void UpdateUI()
+{
+    UpdateCurrentLapUI();
+    UpdateBestLapUI();
+}
 }
