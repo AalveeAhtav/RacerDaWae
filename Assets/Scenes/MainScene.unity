@@ -2785,7 +2785,7 @@ MonoBehaviour:
   nightSkyboxMat: {fileID: 2100000, guid: 102c3f2cfdcb3d64199f97f4f9aa3d46, type: 2}
   startingTimeOfDay: 0
   autoAnimate: 1
-  secondsPerPhase: 10
+  secondsPerPhase: 20
   daySunColor: {r: 1, g: 0.95, b: 0.8, a: 1}
   daySunIntensity: 1.2
   daySunElevation: 50
@@ -8248,7 +8248,7 @@ Camera:
   far clip plane: 1000
   field of view: 70
   orthographic: 1
-  orthographic size: 33
+  orthographic size: 100
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
