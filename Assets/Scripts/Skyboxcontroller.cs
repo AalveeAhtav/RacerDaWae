@@ -1,12 +1,10 @@
 using UnityEngine;
 using UnityEngine.Rendering;
 
-/// <summary>
 /// SkyboxController.cs - Juliette Kolto
 ///
 /// Controls skybox and lighting for Day, Sunset, and Night.
-/// Auto-animates by cycling through each preset on a timer.
-/// </summary>
+
 public class SkyboxController : MonoBehaviour
 {
     public enum TimeOfDay { Day, Sunset, Night }

@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.Rendering;
 
-/// <summary>
 /// LightingManager.cs - Juliette Kolto
 /// 
 /// Controls all scene lighting for the racetrack environment:
@@ -9,13 +8,7 @@ using UnityEngine.Rendering;
 ///   - Ambient light (sky, equator, ground) for environment fill
 ///   - Shadow quality and distance settings
 ///   - Optional time-of-day angle control for the sun
-/// 
-/// HOW TO USE:
-///   1. Create an empty GameObject in your scene, name it "LightingManager"
-///   2. Attach this script to it
-///   3. Drag your scene's Directional Light into the "Sun Light" field in the Inspector
-///   4. Tweak the exposed settings in the Inspector to match your desired look
-/// </summary>
+
 public class LightingManager : MonoBehaviour
 {
     // -------------------------------------------------------------------------

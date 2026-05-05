@@ -2,7 +2,6 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
-/// <summary>
 /// PostProcessingSetup.cs - Juliette Kolto
 ///
 /// Configures post-processing effects for the racetrack scene using Unity URP Volumes.
@@ -12,17 +11,7 @@ using UnityEngine.Rendering.Universal;
 ///   - Anti-Aliasing:  Smooths jagged edges on geometry
 ///   - Color Grading:  Adjusts overall color tone, contrast, and saturation
 ///   - Vignette:       Darkens screen edges for a cinematic framed look
-///
-/// HOW TO USE:
-///   1. In the Hierarchy, find the existing "Global Volume" object
-///      (your scene already has one - check the Hierarchy panel)
-///   2. Click it and in the Inspector click "Add Component"
-///   3. Search for "PostProcessingSetup" and add it
-///   4. Tweak settings in the Inspector to your liking
-///   5. Hit Play to see the effects
-///
-/// NOTE: Your scene already has a Global Volume. Use that instead of making a new one!
-/// </summary>
+
 [RequireComponent(typeof(Volume))]
 public class PostProcessingSetup : MonoBehaviour
 {
