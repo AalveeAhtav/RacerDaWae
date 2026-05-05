@@ -2,24 +2,11 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-/// <summary>
 /// PauseMenu.cs - Juliette Kolto
 ///
 /// Handles pausing the game with ESC and showing a pause menu
 /// with Resume and Restart buttons.
-///
-/// HOW TO USE:
-///   1. Drop this script into Assets/Scripts
-///   2. In MainScene, create a UI Canvas (GameObject -> UI -> Canvas)
-///      Name it "PauseCanvas"
-///   3. Inside the Canvas add a Panel (this is the pause menu background)
-///   4. Inside the Panel add:
-///      - A Text that says "PAUSED"
-///      - A Button named "ResumeButton" with text "Resume"
-///      - A Button named "RestartButton" with text "Restart"
-///   5. Create an empty GameObject, name it "PauseMenu", attach this script
-///   6. Drag the references into the Inspector fields below
-/// </summary>
+
 public class PauseMenu : MonoBehaviour
 {
     // -------------------------------------------------------------------------
